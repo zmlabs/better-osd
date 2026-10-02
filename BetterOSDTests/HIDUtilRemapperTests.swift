@@ -4,6 +4,8 @@
 //
 
 @testable import BetterOSD
+import Foundation
+import os
 import Testing
 
 @MainActor
@@ -19,15 +21,15 @@ struct HIDUtilRemapperTests {
     }
 
     @Test
-    func addingOursReplacesPriorOwnedRowsWithoutDuplicating() {
-        let stale = HIDUtilRemapper.Entry(
+    func addingOursPreservesConflictingThirdPartyMapping() {
+        let existing = HIDUtilRemapper.Entry(
             source: HIDUtilRemapper.f5Source,
             destination: 0x1
         )
-        let merged = HIDUtilRemapper.mappingsByAddingOurs(to: [thirdParty, stale])
+        let merged = HIDUtilRemapper.mappingsByAddingOurs(to: [thirdParty, existing])
         let f5 = merged.filter { $0.source == HIDUtilRemapper.f5Source }
         #expect(f5.count == 1)
-        #expect(f5.first?.destination == HIDUtilRemapper.f5Destination)
+        #expect(f5.first == existing)
         #expect(merged.contains(thirdParty))
     }
 
@@ -45,43 +47,145 @@ struct HIDUtilRemapperTests {
     }
 
     @Test
-    func propertyPayloadUsesHexAndWrapsArray() {
-        let payload = HIDUtilRemapper.propertyPayload(for: HIDUtilRemapper.ownedEntries)
-        #expect(payload.contains("UserKeyMapping"))
-        #expect(payload.contains("0xC000000CF"))
-        #expect(payload.contains("0x10000009B"))
-        #expect(payload.contains("0xFF00000009"))
-        #expect(payload.contains("0xFF00000008"))
+    func clearingPreservesThirdPartyMappingsWithOwnedSource() {
+        let mapping = HIDUtilRemapper.Entry(source: HIDUtilRemapper.f5Source, destination: 0x700000029)
+        #expect(HIDUtilRemapper.mappingsByRemovingOurs(from: [mapping]) == [mapping])
     }
 
     @Test
-    func parseMappingsReadsHidutilOpenStepDump() {
-        // hidutil prints Dst before Src; values are decimal.
-        let dump = """
-        RegistryID  Key                   Value
-        10000093c   UserKeyMapping   (
-                {
-                HIDKeyboardModifierMappingDst = 30064771113;
-                HIDKeyboardModifierMappingSrc = 30064771129;
-            },
-                {
-                HIDKeyboardModifierMappingDst = 1095216660489;
-                HIDKeyboardModifierMappingSrc = 51539607759;
-            }
-        )
-        """
-        let parsed = HIDUtilRemapper.parseMappings(from: dump)
-        #expect(parsed.count == 2)
-        #expect(parsed.contains(where: { $0.source == 0x700000039 && $0.destination == 0x700000029 }))
-        #expect(parsed.contains(where: { $0.source == 0xC000000CF && $0.destination == 0xFF00000009 }))
+    func addingOursDoesNotDuplicateExistingOwnedMappings() {
+        let mappings = [thirdParty] + HIDUtilRemapper.ownedEntries
+        #expect(HIDUtilRemapper.mappingsByAddingOurs(to: mappings) == mappings)
     }
 
     @Test
-    func parseMappingsReturnsEmptyForNullDump() {
-        let dump = """
-        RegistryID  Key                   Value
-        10000093c   UserKeyMapping   (null)
-        """
-        #expect(HIDUtilRemapper.parseMappings(from: dump).isEmpty)
+    func emptyDeviceDoesNotOverwriteAnotherDevicesMappings() async {
+        let transport = FakeHIDMappingTransport(devices: [
+            .init(registryID: 1, entries: []),
+            .init(registryID: 2, entries: [thirdParty]),
+            .init(registryID: 3, entries: [thirdParty], isKeyboard: false),
+        ])
+        let controller = HIDRemappingController(transport: transport)
+        controller.setEnabled(true, mode: "f5f6")
+        await controller.waitForPendingUpdates()
+        #expect(transport.entries(for: 1) == HIDUtilRemapper.ownedEntries)
+        #expect(transport.entries(for: 2) == [thirdParty] + HIDUtilRemapper.ownedEntries)
+        #expect(transport.entries(for: 3) == [thirdParty])
+        controller.setEnabled(false, mode: "f5f6")
+        await controller.waitForPendingUpdates()
+        #expect(transport.entries(for: 1) == [])
+        #expect(transport.entries(for: 2) == [thirdParty])
+        #expect(transport.entries(for: 3) == [thirdParty])
+    }
+
+    @Test
+    func disablingWaitsForAnInFlightEnable() async {
+        let transport = FakeHIDMappingTransport(devices: [.init(registryID: 1, entries: [thirdParty])], pauseFirstRead: true)
+        let controller = HIDRemappingController(transport: transport)
+        controller.setEnabled(true, mode: "f5f6")
+        #expect(transport.waitForFirstRead())
+        controller.setEnabled(false, mode: "f5f6")
+        transport.resumeFirstRead()
+        await controller.waitForPendingUpdates()
+        #expect(transport.writes.map(\.entries) == [[thirdParty] + HIDUtilRemapper.ownedEntries, [thirdParty]])
+        #expect(transport.entries(for: 1) == [thirdParty])
+    }
+
+    @Test
+    func reenablingSelectedF5F6ModeReappliesMappings() async {
+        let transport = FakeHIDMappingTransport(devices: [.init(registryID: 1, entries: [])])
+        let controller = HIDRemappingController(transport: transport)
+        controller.setEnabled(true, mode: "f5f6")
+        controller.setEnabled(false, mode: "f5f6")
+        controller.setEnabled(true, mode: "f5f6")
+        await controller.waitForPendingUpdates()
+        #expect(transport.writes.map(\.entries) == [HIDUtilRemapper.ownedEntries, [], HIDUtilRemapper.ownedEntries])
+        controller.setEnabled(true, mode: "cmdF1F2")
+        await controller.waitForPendingUpdates()
+        #expect(transport.entries(for: 1) == [])
+    }
+
+    @Test
+    func unreadableMappingsAreNeverOverwritten() async {
+        let transport = FakeHIDMappingTransport(devices: [.init(registryID: 1, entries: [thirdParty])], readSucceeds: false)
+        let controller = HIDRemappingController(transport: transport)
+        controller.setEnabled(true, mode: "f5f6")
+        controller.setEnabled(false, mode: "f5f6")
+        await controller.waitForPendingUpdates()
+        #expect(transport.writes.isEmpty)
+        #expect(transport.entries(for: 1) == [thirdParty])
+    }
+
+    @Test
+    func decodeNativeMappingsPreservesFullWidthUsageCodes() {
+        let rows = HIDUtilRemapper.ownedEntries.map {
+            ["HIDKeyboardModifierMappingSrc": NSNumber(value: $0.source),
+             "HIDKeyboardModifierMappingDst": NSNumber(value: $0.destination)]
+        }
+        #expect(IOHIDMappingTransport.decodeMappings(rows as NSArray) == HIDUtilRemapper.ownedEntries)
+        #expect(IOHIDMappingTransport.decodeMappings(nil) == [])
+        #expect(IOHIDMappingTransport.decodeMappings([] as NSArray) == [])
+        #expect(IOHIDMappingTransport.decodeMappings([["HIDKeyboardModifierMappingSrc": NSNumber(value: 1)]]) == nil)
+        #expect(IOHIDMappingTransport.decodeMappings("unreadable") == nil)
+    }
+}
+
+nonisolated private final class FakeHIDMappingTransport: HIDMappingTransport {
+    struct Write: Sendable {
+        var registryID: UInt64
+        var entries: [HIDUtilRemapper.Entry]
+    }
+
+    private struct State: Sendable {
+        var devices: [HIDUtilRemapper.DeviceMappings]
+        var writes: [Write] = []
+        var readCount = 0
+    }
+
+    private let state: OSAllocatedUnfairLock<State>
+    private let readSucceeds: Bool
+    private let pauseFirstRead: Bool
+    private let firstReadStarted = DispatchSemaphore(value: 0)
+    private let firstReadResume = DispatchSemaphore(value: 0)
+
+    init(devices: [HIDUtilRemapper.DeviceMappings], readSucceeds: Bool = true, pauseFirstRead: Bool = false) {
+        state = OSAllocatedUnfairLock(initialState: State(devices: devices))
+        self.readSucceeds = readSucceeds
+        self.pauseFirstRead = pauseFirstRead
+    }
+
+    var writes: [Write] { state.withLock { $0.writes } }
+
+    func entries(for registryID: UInt64) -> [HIDUtilRemapper.Entry]? {
+        state.withLock { $0.devices.first { $0.registryID == registryID }?.entries }
+    }
+
+    func readMappings() -> [HIDUtilRemapper.DeviceMappings]? {
+        let snapshot = state.withLock { state in
+            state.readCount += 1
+            return (devices: state.devices, isFirst: state.readCount == 1)
+        }
+        if pauseFirstRead && snapshot.isFirst {
+            firstReadStarted.signal()
+            _ = firstReadResume.wait(timeout: .now() + 5)
+        }
+        return readSucceeds ? snapshot.devices : nil
+    }
+
+    func writeMappings(_ entries: [HIDUtilRemapper.Entry], for registryID: UInt64) -> Bool {
+        state.withLock { state in
+            guard let index = state.devices.firstIndex(where: { $0.registryID == registryID }) else { return false }
+            state.devices[index].entries = entries
+            state.writes.append(Write(registryID: registryID, entries: entries))
+            return true
+        }
+    }
+
+    func waitForFirstRead() -> Bool {
+        firstReadStarted.wait(timeout: .now() + 5) == .success
+    }
+
+    func resumeFirstRead() {
+        firstReadResume.signal()
     }
 }

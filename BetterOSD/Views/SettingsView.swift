@@ -174,10 +174,9 @@ struct SettingsView: View {
                         .onChange(of: keyboardBacklightEnabled) { _, isOn in
                             if isOn {
                                 previewType = .keyboardBacklight
-                                // Default to ⌘F1/⌘F2: no system remapping needed.
-                                if keyMode.isEmpty { applyMode("cmdF1F2") }
+                                applyMode(keyMode.isEmpty ? "cmdF1F2" : keyMode)
                             } else {
-                                HIDUtilRemapper.clearRemapping()
+                                HIDUtilRemapper.setEnabled(false, mode: keyMode)
                             }
                         }
                 }
@@ -210,14 +209,13 @@ struct SettingsView: View {
         case "f5f6":
             brightnessUpCode = MediaKeyMonitor.standardKeyboardBrightnessUpCode
             brightnessDownCode = MediaKeyMonitor.standardKeyboardBrightnessDownCode
-            HIDUtilRemapper.applyF5F6Remapping()
         case "cmdF1F2":
             brightnessUpCode = -1
             brightnessDownCode = -1
-            HIDUtilRemapper.clearRemapping()
         default:
             break
         }
+        HIDUtilRemapper.setEnabled(keyboardBacklightEnabled, mode: mode)
     }
 
     

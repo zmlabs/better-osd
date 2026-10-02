@@ -5,6 +5,7 @@
 //  Created by yu on 2026/8/31.
 //
 
+import AppKit
 import CoreGraphics
 import Foundation
 @testable import BetterOSD
@@ -246,7 +247,112 @@ struct DDCBrightnessClientTests {
         #expect(gammaCalls.map(\.factor) == [1])
     }
 
-    // MARK: - Helpers
+    @Test
+    func switchingBetweenDisplaysKeepsBrightnessCachesIndependent() {
+        let defaults = makeDefaults()
+        let transport = FakeDDCTransport(lastReadLuminance: nil)
+        var candidate = (displayID: CGDirectDisplayID(42), displayKey: "A")
+        let client = DDCBrightnessClient(
+            transportProvider: { _ in transport },
+            displayCandidateProvider: { candidate },
+            defaults: defaults,
+            gammaDimming: { _, _ in }
+        )
+
+        #expect(client.setBrightness(0.5))
+        candidate = (43, "B")
+        #expect(client.setBrightness(0.875))
+        candidate = (42, "A")
+        #expect(client.currentBrightness() == 0.5)
+        candidate = (43, "B")
+        #expect(client.currentBrightness() == 0.875)
+    }
+
+    @Test
+    func launchGammaRestoreUpdatesPersistedBrightness() {
+        let defaults = makeDefaults()
+        let key = "restored-display"
+        defaults.set([key], forKey: AppStorageKeys.ddcSoftwareDimmedDisplays)
+        defaults.set(Float(0), forKey: AppStorageKeys.ddcBrightnessCachePrefix + key)
+        var gammaFactors: [Float] = []
+        let client = DDCBrightnessClient(
+            transportProvider: { _ in FakeDDCTransport(lastReadLuminance: nil) },
+            displayCandidateProvider: { (42, key) },
+            defaults: defaults,
+            gammaDimming: { _, factor in gammaFactors.append(factor) },
+            activeExternalDisplays: { [key: 42] }
+        )
+
+        #expect(gammaFactors == [1])
+        #expect(client.currentBrightness() == 0.25)
+        #expect(defaults.float(forKey: AppStorageKeys.ddcBrightnessCachePrefix + key) == 0.25)
+        #expect(client.setBrightness(0.1875))
+        #expect(gammaFactors == [1, 0.75])
+    }
+
+    @Test
+    func terminationGammaRestoreUpdatesBrightnessCache() {
+        let defaults = makeDefaults()
+        let key = "terminated-display"
+        let client = DDCBrightnessClient(
+            transportProvider: { _ in FakeDDCTransport(lastReadLuminance: nil) },
+            displayCandidateProvider: { (42, key) },
+            defaults: defaults,
+            gammaDimming: { _, _ in },
+            activeExternalDisplays: { [key: 42] }
+        )
+        #expect(client.setBrightness(0))
+        NotificationCenter.default.post(name: NSApplication.willTerminateNotification, object: nil)
+        #expect(client.currentBrightness() == 0.25)
+        #expect(defaults.float(forKey: AppStorageKeys.ddcBrightnessCachePrefix + key) == 0.25)
+    }
+
+    @Test
+    func disconnectedDisplayKeepsRecoveryStateUntilItReturns() {
+        let defaults = makeDefaults()
+        defaults.set(["online", "offline"], forKey: AppStorageKeys.ddcSoftwareDimmedDisplays)
+        defaults.set(Float(0), forKey: AppStorageKeys.ddcBrightnessCachePrefix + "online")
+        defaults.set(Float(0), forKey: AppStorageKeys.ddcBrightnessCachePrefix + "offline")
+        var candidate: (displayID: CGDirectDisplayID, displayKey: String)?
+        var restoredDisplays: [CGDirectDisplayID] = []
+        let client = DDCBrightnessClient(
+            transportProvider: { _ in FakeDDCTransport(lastReadLuminance: nil) },
+            displayCandidateProvider: { candidate },
+            defaults: defaults,
+            gammaDimming: { id, _ in restoredDisplays.append(id) },
+            activeExternalDisplays: { ["online": 42] }
+        )
+        #expect(restoredDisplays == [42])
+        #expect(defaults.stringArray(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays) == ["offline"])
+        candidate = (43, "offline")
+        #expect(client.currentBrightness() == 0.25)
+        #expect(client.currentBrightness() == 0.25)
+        #expect(restoredDisplays == [42, 43])
+        #expect(defaults.stringArray(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays) == nil)
+    }
+
+    @Test
+    func terminatingWithDisconnectedDisplayPreservesItsRecoveryState() {
+        let defaults = makeDefaults()
+        var candidate: (displayID: CGDirectDisplayID, displayKey: String) = (42, "online")
+        var gammaCalls: [(CGDirectDisplayID, Float)] = []
+        let client = DDCBrightnessClient(
+            transportProvider: { _ in FakeDDCTransport(lastReadLuminance: nil) },
+            displayCandidateProvider: { candidate },
+            defaults: defaults,
+            gammaDimming: { gammaCalls.append(($0, $1)) },
+            activeExternalDisplays: { ["online": 42] }
+        )
+        #expect(client.setBrightness(0))
+        candidate = (43, "offline")
+        #expect(client.setBrightness(0))
+        NotificationCenter.default.post(name: NSApplication.willTerminateNotification, object: nil)
+        #expect(gammaCalls.map { $0.0 } == [42, 43, 42])
+        #expect(gammaCalls.map { $0.1 } == [0, 0, 1])
+        #expect(defaults.float(forKey: AppStorageKeys.ddcBrightnessCachePrefix + "online") == 0.25)
+        #expect(defaults.float(forKey: AppStorageKeys.ddcBrightnessCachePrefix + "offline") == 0)
+        #expect(defaults.stringArray(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays) == ["offline"])
+    }
 
     private func makeDefaults() -> UserDefaults {
         let suite = "ddc-tests-\(UUID().uuidString)"

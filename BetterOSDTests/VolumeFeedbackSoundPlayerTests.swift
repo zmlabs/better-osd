@@ -10,8 +10,8 @@ import Testing
 @MainActor
 struct VolumeFeedbackSoundPlayerTests {
     @Test
-    func nilPreferenceMeansFeedbackEnabled() {
-        #expect(VolumeFeedbackSoundPlayer.isFeedbackSettingEnabled(nil) == true)
+    func nilPreferenceMeansFeedbackDisabled() {
+        #expect(VolumeFeedbackSoundPlayer.isFeedbackSettingEnabled(nil) == false)
     }
 
     @Test
@@ -50,9 +50,8 @@ struct VolumeFeedbackSoundPlayerTests {
         // Setting on + no invert → play; setting on + invert → skip.
         #expect(shouldPlay(setting: 1, invert: false) == true)
         #expect(shouldPlay(setting: 1, invert: true) == false)
-        // Unset defaults to on.
-        #expect(shouldPlay(setting: nil, invert: false) == true)
-        #expect(shouldPlay(setting: nil, invert: true) == false)
+        #expect(shouldPlay(setting: nil, invert: false) == false)
+        #expect(shouldPlay(setting: nil, invert: true) == true)
     }
 
     private func shouldPlay(setting: Int?, invert: Bool) -> Bool {

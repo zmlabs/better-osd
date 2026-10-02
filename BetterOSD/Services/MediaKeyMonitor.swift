@@ -108,7 +108,9 @@ final class MediaKeyMonitor {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.reloadBacklightCache()
+            MainActor.assumeIsolated {
+                self?.reloadBacklightCache()
+            }
         }
     }
 

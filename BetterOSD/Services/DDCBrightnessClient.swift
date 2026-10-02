@@ -76,10 +76,11 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
 
     private var cachedTransport: DDCI2CTransport?
     private var cachedDisplayID: CGDirectDisplayID?
-    private var cachedBrightness: Float?
+    private var cachedBrightness: [String: Float] = [:]
     /// Displays currently dimmed via gamma tables, so we restore them once
     /// (not on every above-floor write) and on termination.
-    private var softwareDimmedDisplays: Set<CGDirectDisplayID> = []
+    private var softwareDimmedDisplays: Set<String> = []
+    private var pendingGammaRestores: Set<String>
     private var terminationObserver: (any NSObjectProtocol)?
 
     init(
@@ -94,6 +95,7 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
         self.defaults = defaults
         self.gammaDimming = gammaDimming
         self.activeExternalDisplays = activeExternalDisplays
+        pendingGammaRestores = Set(defaults.stringArray(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays) ?? [])
 
         terminationObserver = NotificationCenter.default.addObserver(
             forName: NSApplication.willTerminateNotification,
@@ -138,7 +140,8 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
     // MARK: - Shared read/write
 
     private func currentBrightness(displayID: CGDirectDisplayID, displayKey key: String) -> Float? {
-        if let cached = storedBrightness(for: key, displayID: displayID) {
+        restorePendingGamma(displayID: displayID, key: key)
+        if let cached = storedBrightness(for: key) {
             return cached
         }
 
@@ -149,7 +152,7 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
             // covers [floor … 1] of our brightness domain.
             let raw = max(0, min(1, Float(read.current) / Float(read.max)))
             let normalized = Self.softwareDimmingFloor + raw * (1 - Self.softwareDimmingFloor)
-            cache(normalized, for: key, displayID: displayID)
+            cache(normalized, for: key)
             return normalized
         }
 
@@ -161,6 +164,7 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
     }
 
     private func setBrightness(_ brightness: Float, displayID: CGDirectDisplayID, displayKey key: String) -> Bool {
+        restorePendingGamma(displayID: displayID, key: key)
         guard let transport = transport(for: displayID) else {
             return false
         }
@@ -188,13 +192,13 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
 
         if let gammaFactor {
             gammaDimming(displayID, gammaFactor)
-            markSoftwareDimmed(displayID, key: key)
-        } else if softwareDimmedDisplays.remove(displayID) != nil {
+            markSoftwareDimmed(key: key)
+        } else if softwareDimmedDisplays.remove(key) != nil {
             gammaDimming(displayID, 1)
             unmarkSoftwareDimmed(key: key)
         }
 
-        cache(clamped, for: key, displayID: displayID)
+        cache(clamped, for: key)
         return true
     }
 
@@ -203,30 +207,39 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
     /// Leaving the gamma tables dimmed after quit would keep the screen dark
     /// content-wise, so restore every display we touched on the way out.
     private func restoreGammaForTermination() {
-        for displayID in softwareDimmedDisplays {
-            gammaDimming(displayID, 1)
+        let active = activeExternalDisplays()
+        let keys = softwareDimmedDisplays.union(pendingGammaRestores)
+        for key in keys {
+            guard let displayID = active[key] else { continue }
+            restoreGamma(displayID: displayID, key: key)
         }
         softwareDimmedDisplays.removeAll()
-        defaults.removeObject(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays)
     }
 
-    /// Crash / force-quit safety: re-apply identity gamma for any display keys
-    /// we persisted as dimmed in a prior session, then clear the list.
     private func restorePersistedGammaIfNeeded() {
-        let keys = defaults.stringArray(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays) ?? []
-        guard !keys.isEmpty else { return }
-
+        guard !pendingGammaRestores.isEmpty else { return }
         let active = activeExternalDisplays()
-        for key in keys {
+        for key in pendingGammaRestores {
             if let displayID = active[key] {
-                gammaDimming(displayID, 1)
+                restoreGamma(displayID: displayID, key: key)
             }
         }
-        defaults.removeObject(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays)
     }
 
-    private func markSoftwareDimmed(_ displayID: CGDirectDisplayID, key: String) {
-        softwareDimmedDisplays.insert(displayID)
+    private func restorePendingGamma(displayID: CGDirectDisplayID, key: String) {
+        guard pendingGammaRestores.contains(key) else { return }
+        restoreGamma(displayID: displayID, key: key)
+    }
+
+    private func restoreGamma(displayID: CGDirectDisplayID, key: String) {
+        gammaDimming(displayID, 1)
+        cache(max(Self.softwareDimmingFloor, storedBrightness(for: key) ?? Self.softwareDimmingFloor), for: key)
+        pendingGammaRestores.remove(key)
+        unmarkSoftwareDimmed(key: key)
+    }
+
+    private func markSoftwareDimmed(key: String) {
+        softwareDimmedDisplays.insert(key)
         var keys = Set(defaults.stringArray(forKey: AppStorageKeys.ddcSoftwareDimmedDisplays) ?? [])
         keys.insert(key)
         defaults.set(Array(keys), forKey: AppStorageKeys.ddcSoftwareDimmedDisplays)
@@ -299,18 +312,18 @@ final class DDCBrightnessClient: DisplayServicesBrightnessControlling, TargetedB
         AppStorageKeys.ddcBrightnessCachePrefix + displayKey
     }
 
-    private func storedBrightness(for displayKey: String, displayID: CGDirectDisplayID) -> Float? {
-        if let cachedBrightness, cachedDisplayID == displayID {
-            return cachedBrightness
+    private func storedBrightness(for displayKey: String) -> Float? {
+        if let cached = cachedBrightness[displayKey] {
+            return cached
         }
         let key = Self.cacheKey(displayKey: displayKey)
         guard let stored = defaults.object(forKey: key) as? Float else { return nil }
-        cachedBrightness = stored
+        cachedBrightness[displayKey] = stored
         return stored
     }
 
-    private func cache(_ brightness: Float, for displayKey: String, displayID: CGDirectDisplayID) {
-        cachedBrightness = brightness
+    private func cache(_ brightness: Float, for displayKey: String) {
+        cachedBrightness[displayKey] = brightness
         defaults.set(brightness, forKey: Self.cacheKey(displayKey: displayKey))
     }
 
@@ -468,36 +481,52 @@ nonisolated final class IOKitDDCTransport: DDCI2CTransport {
               let read: ReadI2C = load(handle: iokit, symbol: "IOAVServiceReadI2C")
         else { return nil }
 
-        var request = [UInt8](repeating: 0, count: 4)
-        request[0] = 0x82
-        request[1] = 0x01
-        request[2] = 0x10
+        return readLuminance(
+            writeRequest: { writePacket($0, service: service, chipAddress: chipAddress) },
+            readReply: {
+                var reply = [UInt8](repeating: 0, count: 12)
+                let pointer = Unmanaged.passUnretained(service).toOpaque()
+                guard read(pointer, chipAddress, inputAddress, &reply, 12) == 0 else { return nil }
+                return reply
+            },
+            waitForReply: { usleep(chipAddress == chipAddressMCDP29XX ? 50_000 : settleMicroseconds) }
+        )
+    }
+
+    static func readLuminance(
+        writeRequest: ([UInt8]) -> Bool,
+        readReply: () -> [UInt8]?,
+        waitForReply: () -> Void
+    ) -> (current: Int, max: Int)? {
+        var request: [UInt8] = [0x82, 0x01, 0x10, 0]
         request[3] = 0x6e ^ request[0] ^ request[1] ^ request[2]
-
-        var reply = [UInt8](repeating: 0, count: 12)
-        usleep(settleMicroseconds)
-        let pointer = Unmanaged.passUnretained(service).toOpaque()
-        guard read(pointer, chipAddress, inputAddress, &reply, 12) == 0 else { return nil }
-
+        guard writeRequest(request) else { return nil }
+        waitForReply()
+        guard let reply = readReply(), reply.count >= 11,
+              reply[0] == 0x6e, reply[1] == 0x88, reply[2] == 0x02,
+              reply[3] == 0, reply[4] == 0x10,
+              reply.prefix(11).reduce(UInt8(0x50), ^) == 0
+        else { return nil }
         let maxValue = (Int(reply[6]) << 8) | Int(reply[7])
         let currentValue = (Int(reply[8]) << 8) | Int(reply[9])
-        guard maxValue > 0, maxValue <= 1000, currentValue >= 0, currentValue <= maxValue else { return nil }
+        guard maxValue > 0, maxValue <= 1000, currentValue <= maxValue else { return nil }
         return (currentValue, maxValue)
     }
 
     func write(value: UInt16) -> Bool {
-        guard let iokit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW),
-              let write: WriteI2C = Self.load(handle: iokit, symbol: "IOAVServiceWriteI2C")
-        else { return false }
-
         var packet: [UInt8] = [0x84, 0x03, 0x10, UInt8(value >> 8), UInt8(value & 0xFF), 0]
         packet[5] = 0x6e ^ 0x51 ^ packet[0] ^ packet[1] ^ packet[2] ^ packet[3] ^ packet[4]
+        return Self.writePacket(packet, service: service, chipAddress: chipAddress)
+    }
 
+    private static func writePacket(_ packet: [UInt8], service: CFTypeRef, chipAddress: UInt32) -> Bool {
+        guard let iokit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW),
+              let write: WriteI2C = load(handle: iokit, symbol: "IOAVServiceWriteI2C")
+        else { return false }
         let pointer = Unmanaged.passUnretained(service).toOpaque()
-        // Two iterations, as in m1ddc: some panels silently drop single writes.
-        for _ in 0 ..< Self.writeIterations {
-            usleep(Self.settleMicroseconds)
-            if write(pointer, chipAddress, Self.inputAddress, packet, 6) != 0 {
+        for _ in 0 ..< writeIterations {
+            usleep(settleMicroseconds)
+            if write(pointer, chipAddress, inputAddress, packet, UInt32(packet.count)) != 0 {
                 return false
             }
         }
