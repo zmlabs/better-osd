@@ -13,8 +13,6 @@ struct HUDCalculationTests {
     func keepsExpectedStepConstants() {
         #expect(HUDCalculation.standardSteps == 16)
         #expect(HUDCalculation.fineSteps == 64)
-        #expect(HUDCalculation.coarseStep == 1.0 / 16.0)
-        #expect(HUDCalculation.fineStep == 1.0 / 64.0)
     }
 
     @Test

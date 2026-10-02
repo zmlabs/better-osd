@@ -117,7 +117,7 @@ class BetterOSDWindow: NSPanel {
             context.duration = 0.18
             context.timingFunction = CAMediaTimingFunction(name: .easeIn)
             self.animator().alphaValue = 0.0
-        } completionHandler: {
+        } completionHandler: { [weak self] in
             Task { @MainActor [weak self] in
                 self?.orderOut(nil)
             }

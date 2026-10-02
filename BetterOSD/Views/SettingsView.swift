@@ -17,11 +17,11 @@ enum SettingsPreviewType: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .volume: NSLocalizedString("Volume", comment: "Volume")
-        case .brightness: NSLocalizedString("Brightness", comment: "Brightness")
-        case .keyboardBacklight: NSLocalizedString("Keyboard", comment: "Keyboard Backlight")
+        case .volume: "Volume"
+        case .brightness: "Brightness"
+        case .keyboardBacklight: "Keyboard"
         }
     }
 
@@ -48,15 +48,15 @@ enum GlassVariantOption: Int, CaseIterable, Identifiable {
 
     var id: Int { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
         case .regular: "Regular"
         case .clear: "Clear"
         case .dock: "Dock"
-        case .appIcons: "AppIcons"
-        case .notificationCenter: "NotificationCenter"
+        case .appIcons: "App Icons"
+        case .notificationCenter: "Notification Center"
         case .bubbles: "Bubbles"
-        case .focusBorder: "FocusBorder"
+        case .focusBorder: "Focus Border"
         }
     }
 }
@@ -162,10 +162,10 @@ struct SettingsView: View {
     // MARK: - Keyboard Backlight
 
     private var keyboardBacklightSection: some View {
-        SettingsSection(title: NSLocalizedString("Keyboard Backlight", comment: "Keyboard Backlight")) {
+        SettingsSection(title: "Keyboard Backlight") {
             VStack(spacing: 0) {
                 SettingsRow {
-                    Text("Capture Keyboard Backlight")
+                    Text("Show Backlight Indicator")
                     Spacer()
                     Toggle("", isOn: $keyboardBacklightEnabled)
                         .toggleStyle(.switch)
@@ -222,7 +222,7 @@ struct SettingsView: View {
     // MARK: - Appearance
 
     private var appearanceSection: some View {
-        SettingsSection(title: NSLocalizedString("Appearance", comment: "Appearance")) {
+        SettingsSection(title: "Appearance") {
             VStack(spacing: 0) {
                 SettingsRow {
                     Text("HUD Style")
@@ -291,7 +291,7 @@ struct SettingsView: View {
     // MARK: - General
 
     private var generalSection: some View {
-        SettingsSection(title: NSLocalizedString("General", comment: "General")) {
+        SettingsSection(title: "General") {
             VStack(spacing: 0) {
                 SettingsRow {
                     Text("Launch at Login")
@@ -300,6 +300,7 @@ struct SettingsView: View {
                         .toggleStyle(.switch)
                         .labelsHidden()
                         .controlSize(.small)
+                        .accessibilityLabel("Launch at Login")
                 }
 
                 SettingsDivider()
@@ -324,7 +325,7 @@ struct SettingsView: View {
     // MARK: - Updates
 
     private var updateSection: some View {
-        SettingsSection(title: NSLocalizedString("Updates", comment: "Updates")) {
+        SettingsSection(title: "Updates") {
             VStack(spacing: 0) {
                 SettingsRow {
                     Text("Automatically Install Updates")
@@ -451,7 +452,7 @@ struct AccessibilityPermissionBanner: View {
 }
 
 struct SettingsSection<Content: View>: View {
-    let title: String
+    let title: LocalizedStringResource
     @ViewBuilder let content: Content
 
     var body: some View {

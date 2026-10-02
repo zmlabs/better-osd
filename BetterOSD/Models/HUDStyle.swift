@@ -16,12 +16,12 @@ enum HUDStyle: String, CaseIterable, Identifiable {
         rawValue
     }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
         case .classic:
-            NSLocalizedString("Classic", comment: "Classic")
+            "Classic"
         case .modern:
-            NSLocalizedString("Modern", comment: "Modern")
+            "Modern"
         }
     }
 }

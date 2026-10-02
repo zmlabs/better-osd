@@ -12,9 +12,6 @@ nonisolated enum HUDCalculation {
     static let standardSteps = 16
     static let fineStepsPerStandardStep = fineSteps / standardSteps
 
-    static let coarseStep: Float = 1.0 / 16.0
-    static let fineStep: Float = 1.0 / 64.0
-
     static func volumeToFineStep(_ volume: Float) -> Int {
         Int(round(volume * Float(fineSteps)))
     }

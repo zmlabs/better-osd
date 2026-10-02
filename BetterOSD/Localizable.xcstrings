@@ -44,51 +44,17 @@
             "state": "translated",
             "value": ""
           }
-        }
-      }
-    },
-    "·": {
-      "localizations": {
-        "de": {
+        },
+        "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "·"
+            "value": ""
           }
         },
-        "es": {
+        "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "·"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "·"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "·"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "·"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "·"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "·"
+            "value": ""
           }
         }
       }
@@ -135,6 +101,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "需要輔助功能權限"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accessibility Permission Needed"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Требуется доступ к функциям универсального доступа"
+          }
+        }
+      }
+    },
+    "App Icons": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Icons"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 图标"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 圖像"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icônes d’apps"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリアイコン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱 아이콘"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App-Symbole"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iconos de apps"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Значки приложений"
           }
         }
       }
@@ -183,6 +219,18 @@
             "state": "translated",
             "value": "外觀"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Внешний вид"
+          }
         }
       }
     },
@@ -229,6 +277,18 @@
             "state": "translated",
             "value": "自動安裝更新"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatically Install Updates"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Автоматически устанавливать обновления"
+          }
         }
       }
     },
@@ -274,6 +334,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "底部偏移"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bottom Offset"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отступ снизу"
           }
         }
       }
@@ -322,6 +394,76 @@
             "state": "translated",
             "value": "亮度"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brightness"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Яркость"
+          }
+        }
+      }
+    },
+    "Bubbles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bubbles"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "气泡"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "氣泡"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bulles"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バブル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "버블"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blasen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burbujas"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пузырьки"
+          }
         }
       }
     },
@@ -367,6 +509,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "檢查更新"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for Updates"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверить обновления"
           }
         }
       }
@@ -415,6 +569,134 @@
             "state": "translated",
             "value": "經典"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Классический"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清透"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清透"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transparent"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリア"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "투명"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transparent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transparente"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прозрачный"
+          }
+        }
+      }
+    },
+    "Dock": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "程序坞"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
         }
       }
     },
@@ -460,6 +742,134 @@
           "stringUnit": {
             "state": "translated",
             "value": "啟用訪問權限以便 BetterOSD 監聽媒體按鍵。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable access so BetterOSD can listen for media keys."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разрешите доступ, чтобы BetterOSD мог обрабатывать клавиши управления медиа."
+          }
+        }
+      }
+    },
+    "F5  /  F6": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5  /  F6"
+          }
+        }
+      }
+    },
+    "Focus Border": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus Border"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "焦点边框"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "焦點邊框"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bordure de focus"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォーカス枠"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포커스 테두리"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fokusrahmen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borde de enfoque"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контур фокуса"
           }
         }
       }
@@ -508,6 +918,18 @@
             "state": "translated",
             "value": "一般"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основные"
+          }
         }
       }
     },
@@ -553,6 +975,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "玻璃變體"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glass Variant"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вариант стекла"
           }
         }
       }
@@ -600,6 +1034,134 @@
             "state": "translated",
             "value": "HUD 樣式"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HUD Style"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стиль индикатора"
+          }
+        }
+      }
+    },
+    "Keyboard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keyboard"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "键盘"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鍵盤"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clavier"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーボード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "키보드"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tastatur"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teclado"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клавиатура"
+          }
+        }
+      }
+    },
+    "Keyboard Backlight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keyboard Backlight"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "键盘背光"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鍵盤背光"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rétroéclairage du clavier"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーボードバックライト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "키보드 백라이트"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tastaturbeleuchtung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retroiluminación del teclado"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подсветка клавиатуры"
+          }
         }
       }
     },
@@ -646,6 +1208,18 @@
             "state": "translated",
             "value": "登入時啟動"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch at Login"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запускать при входе"
+          }
         }
       }
     },
@@ -684,10 +1258,22 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Liquid Glass"
+            "value": "液态玻璃"
           }
         },
         "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "液態玻璃"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liquid Glass"
+          }
+        },
+        "ru": {
           "stringUnit": {
             "state": "translated",
             "value": "Liquid Glass"
@@ -739,6 +1325,76 @@
             "state": "translated",
             "value": "現代"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modern"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Современный"
+          }
+        }
+      }
+    },
+    "Notification Center": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification Center"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知中心"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知中心"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Centre de notifications"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知センター"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림 센터"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilungszentrale"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Centro de notificaciones"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Центр уведомлений"
+          }
         }
       }
     },
@@ -784,6 +1440,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "開啟設定"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть настройки"
           }
         }
       }
@@ -831,6 +1499,18 @@
             "state": "translated",
             "value": "開源"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Source"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Исходный код"
+          }
         }
       }
     },
@@ -876,6 +1556,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "預覽"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предпросмотр"
           }
         }
       }
@@ -923,6 +1615,134 @@
             "state": "translated",
             "value": "結束"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершить"
+          }
+        }
+      }
+    },
+    "Regular": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regular"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "常规"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "표준"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обычный"
+          }
+        }
+      }
+    },
+    "Remaps F5 and F6 from Dictation & Do Not Disturb to keyboard brightness. System assignments are restored automatically when disabled.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remaps F5 and F6 from Dictation & Do Not Disturb to keyboard brightness. System assignments are restored automatically when disabled."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将 F5 和 F6 从“听写”和“勿扰模式”改为调节键盘背光亮度。关闭后会自动恢复系统按键功能。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "將 F5 和 F6 從「聽寫」和「勿擾模式」改為調整鍵盤背光亮度。關閉後會自動還原系統按鍵功能。"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réaffecte F5 et F6, utilisées pour Dictée et Ne pas déranger, au réglage de la luminosité du clavier. Les fonctions système sont automatiquement rétablies à la désactivation."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5 と F6 を「音声入力」と「おやすみモード」からキーボードの輝度調整に割り当て直します。無効にすると、システムのキー割り当てが自動的に元に戻ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F5와 F6의 기능을 받아쓰기 및 방해금지 모드에서 키보드 밝기 조절로 변경합니다. 이 옵션을 끄면 시스템 키 기능이 자동으로 복원됩니다."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belegt F5 und F6 statt Diktierfunktion und „Nicht stören“ mit der Tastaturhelligkeit. Beim Deaktivieren werden die Systembelegungen automatisch wiederhergestellt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reasigna F5 y F6, usadas para Dictado y No molestar, al brillo del teclado. Al desactivar esta opción, se restauran automáticamente las funciones del sistema."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Назначает F5 и F6 для регулировки подсветки клавиатуры вместо диктовки и режима «Не беспокоить». При отключении исходные функции клавиш восстанавливаются автоматически."
+          }
         }
       }
     },
@@ -968,6 +1788,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "設定"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        }
+      }
+    },
+    "Show Backlight Indicator": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Backlight Indicator"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示背光提示"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示背光提示"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher l’indicateur"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バックライト表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "백라이트 표시"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anzeige einblenden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar indicador"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывать индикатор"
           }
         }
       }
@@ -1015,6 +1905,18 @@
             "state": "translated",
             "value": "在選單列顯示"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show in Menu Bar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывать в строке меню"
+          }
         }
       }
     },
@@ -1060,6 +1962,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "有可用更新"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update Available"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступно обновление"
           }
         }
       }
@@ -1108,51 +2022,75 @@
             "state": "translated",
             "value": "更新"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновления"
+          }
         }
       }
     },
-    "v%@": {
+    "Uses Command+F1 and Command+F2. No changes to system key assignments.": {
       "localizations": {
-        "de": {
+        "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "v%@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "v%@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "v%@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "v%@"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "v%@"
+            "value": "Uses Command+F1 and Command+F2. No changes to system key assignments."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "v%@"
+            "value": "使用 Command+F1 和 Command+F2，不更改系统按键功能。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "v%@"
+            "value": "使用 Command+F1 和 Command+F2，不更改系統按鍵功能。"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utilise Commande+F1 et Commande+F2 sans modifier les fonctions des touches système."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command+F1 と Command+F2 を使用します。システムのキー割り当ては変更しません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command+F1 및 Command+F2를 사용합니다. 시스템 키 기능은 변경하지 않습니다."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwendet Befehl+F1 und Befehl+F2. Die Systembelegungen der Tasten bleiben unverändert."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa Comando+F1 y Comando+F2 sin cambiar las funciones de las teclas del sistema."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Использует Command+F1 и Command+F2 без изменения системных назначений клавиш."
           }
         }
       }
@@ -1200,6 +2138,18 @@
             "state": "translated",
             "value": "版本 %@ 現已可用。"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@ is now available."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступна версия %@."
+          }
         }
       }
     },
@@ -1246,6 +2196,192 @@
           "stringUnit": {
             "state": "translated",
             "value": "音量"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Громкость"
+          }
+        }
+      }
+    },
+    "v%@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "v%@"
+          }
+        }
+      }
+    },
+    "·": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        }
+      }
+    },
+    "⌘F1  /  ⌘F2": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘F1  /  ⌘F2"
           }
         }
       }
