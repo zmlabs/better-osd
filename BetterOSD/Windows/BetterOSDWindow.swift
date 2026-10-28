@@ -71,7 +71,13 @@ class BetterOSDWindow: NSPanel {
     }
 
     func updatePosition(on displayID: CGDirectDisplayID? = nil) {
-        let screen = displayID.flatMap(Self.screen(for:)) ?? NSScreen.main
+        let screen: NSScreen?
+        if UserDefaults.standard.bool(forKey: AppStorageKeys.alwaysShowOnMainDisplay) {
+            // The first screen is the primary display; NSScreen.main follows the key window.
+            screen = NSScreen.screens.first
+        } else {
+            screen = displayID.flatMap(Self.screen(for:)) ?? NSScreen.main
+        }
         guard let screen else { return }
 
         let screenFrame = screen.frame

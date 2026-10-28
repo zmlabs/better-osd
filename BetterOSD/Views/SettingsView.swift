@@ -66,6 +66,7 @@ struct SettingsView: View {
     @AppStorage(AppStorageKeys.showInMenuBar) private var showInMenuBar: Bool = true
     @AppStorage(AppStorageKeys.liquidGlassEnable) private var liquidGlassEnable: Bool = true
     @AppStorage(AppStorageKeys.bottomOffset) private var bottomOffset: Double = 120
+    @AppStorage(AppStorageKeys.alwaysShowOnMainDisplay) private var alwaysShowOnMainDisplay: Bool = false
     @AppStorage(AppStorageKeys.glassVariant) private var glassVariant: Int = 0
     @AppStorage(AppStorageKeys.keyboardBacklightEnabled) private var keyboardBacklightEnabled: Bool = false
     @AppStorage(AppStorageKeys.keyboardBrightnessUpCode) private var brightnessUpCode: Int = -1
@@ -282,6 +283,21 @@ struct SettingsView: View {
                     .onChange(of: bottomOffset) { _, newValue in
                         HUDPreviewManager.shared.bottomOffset = newValue
                     }
+                }
+
+                SettingsDivider()
+
+                SettingsRow {
+                    Text("Always Show on Main Display")
+                    Spacer()
+                    Toggle("Always Show on Main Display", isOn: $alwaysShowOnMainDisplay)
+                        .toggleStyle(.switch)
+                        .labelsHidden()
+                        .controlSize(.small)
+                        .onChange(of: alwaysShowOnMainDisplay) { _, _ in
+                            HUDPreviewManager.shared.isPreviewActive = true
+                            HUDPreviewManager.shared.isPreviewActive = false
+                        }
                 }
             }
         }
