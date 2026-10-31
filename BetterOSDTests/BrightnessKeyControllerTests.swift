@@ -36,7 +36,7 @@ struct BrightnessKeyControllerTests {
     @Test
     func consumesAndUpdatesStateForBrightnessUp() {
         let client = FakeDisplayServicesBrightnessClient()
-        client.currentBrightnessValues = [0.5, 0.5625]
+        client.currentBrightnessValues = [0.5]
         client.setBrightnessResult = true
         let controller = BrightnessKeyController(displayController: client)
 
@@ -45,10 +45,11 @@ struct BrightnessKeyControllerTests {
         #expect(result == .consumed(didChange: true))
         #expect(controller.currentState == BrightnessState(brightness: 0.5625))
         #expect(client.setBrightnessArguments == [0.5625])
+        #expect(client.currentBrightnessCallCount == 1)
     }
 
     @Test
-    func consumesUsingTargetBrightnessWhenReadbackFailsAfterSuccessfulSet() {
+    func reportsRequestedBrightnessAfterSuccessfulSet() {
         let client = FakeDisplayServicesBrightnessClient()
         client.currentBrightnessValues = [0.5]
         client.setBrightnessResult = true
@@ -64,7 +65,7 @@ struct BrightnessKeyControllerTests {
     @Test
     func usesFineStepForBrightnessUp() {
         let client = FakeDisplayServicesBrightnessClient()
-        client.currentBrightnessValues = [0.5, 0.515625]
+        client.currentBrightnessValues = [0.5]
         client.setBrightnessResult = true
         let controller = BrightnessKeyController(displayController: client)
 
@@ -104,7 +105,7 @@ struct BrightnessKeyControllerTests {
     @Test
     func targetedHandleStepsOnlyTheGivenDisplay() {
         let client = FakeDisplayServicesBrightnessClient()
-        client.targetedBrightnessValues = [0.5, 0.5625]
+        client.targetedBrightnessValues = [0.5]
         client.setBrightnessResult = true
         let controller = BrightnessKeyController(displayController: client)
 
@@ -115,6 +116,36 @@ struct BrightnessKeyControllerTests {
         #expect(client.targetedSetArguments == [0.5625])
         #expect(client.currentBrightnessCallCount == 0)
         #expect(client.setBrightnessCallCount == 0)
+    }
+
+    @Test
+    func rapidPressesAdvanceFromTheRequestedLevelWhileTheDisplayIsAnimating() {
+        let client = FakeDisplayServicesBrightnessClient()
+        client.currentBrightnessValues = [0.5, 0.52, 0.54]
+        client.setBrightnessResult = true
+        let controller = BrightnessKeyController(displayController: client, uptime: { 10 })
+
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+        #expect(controller.handle(.brightnessDown, fineStep: false) == .consumed(didChange: true))
+
+        #expect(client.setBrightnessArguments == [0.5625, 0.625, 0.5625])
+        #expect(controller.currentState == BrightnessState(brightness: 0.5625))
+    }
+
+    @Test
+    func readsTheDisplayAgainAfterTheTransitionWindow() {
+        let client = FakeDisplayServicesBrightnessClient()
+        client.currentBrightnessValues = [0.5, 0.75]
+        client.setBrightnessResult = true
+        var now: TimeInterval = 10
+        let controller = BrightnessKeyController(displayController: client, uptime: { now })
+
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+        now = 11
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+
+        #expect(client.setBrightnessArguments == [0.5625, 0.8125])
     }
 }
 

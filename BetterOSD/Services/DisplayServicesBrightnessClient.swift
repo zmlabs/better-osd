@@ -31,6 +31,7 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
     private var canChangeBrightness: CanChangeBrightness?
     private var getBrightnessFn: GetBrightness?
     private var setBrightnessFn: SetBrightness?
+    private var setBrightnessSmoothFn: SetBrightness?
 
     func currentBrightness() -> Float? {
         guard let displayID = firstControllableDisplayID(),
@@ -45,13 +46,8 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
     }
 
     func setBrightness(_ brightness: Float) -> Bool {
-        guard let displayID = firstControllableDisplayID(),
-              let setBrightnessFn
-        else {
-            return false
-        }
-
-        return setBrightnessFn(displayID, max(0, min(1, brightness))) == 0
+        guard let displayID = firstControllableDisplayID() else { return false }
+        return setBrightness(brightness, ofDisplay: displayID)
     }
 
     /// True when DisplayServices can drive at least one display — i.e. the
@@ -89,7 +85,17 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
             return false
         }
 
-        return setBrightnessFn(displayID, max(0, min(1, brightness))) == 0
+        let target = max(0, min(1, brightness))
+        // The smooth private API takes a delta from the current brightness,
+        // whereas SetBrightness takes an absolute value. Fall back to the
+        // existing setter when the symbol or the current reading is unavailable.
+        if let setBrightnessSmoothFn,
+           let current = currentBrightness(ofDisplay: displayID),
+           abs(target - current) > 0.0001,
+           setBrightnessSmoothFn(displayID, target - current) == 0 {
+            return true
+        }
+        return setBrightnessFn(displayID, target) == 0
     }
 
     private func firstControllableDisplayID() -> CGDirectDisplayID? {
@@ -121,6 +127,7 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
         canChangeBrightness = load(handle: handle, symbol: "DisplayServicesCanChangeBrightness")
         getBrightnessFn = load(handle: handle, symbol: "DisplayServicesGetBrightness")
         setBrightnessFn = load(handle: handle, symbol: "DisplayServicesSetBrightness")
+        setBrightnessSmoothFn = load(handle: handle, symbol: "DisplayServicesSetBrightnessSmooth")
 
         return canChangeBrightness != nil && getBrightnessFn != nil && setBrightnessFn != nil
     }
