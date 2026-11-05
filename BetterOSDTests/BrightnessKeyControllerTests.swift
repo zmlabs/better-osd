@@ -177,15 +177,15 @@ struct BrightnessKeyControllerTests {
     }
 
     @Test
-    func threeSecondDurationKeepsRequestedLevelBetweenPresses() {
+    func twoSecondDurationKeepsRequestedLevelBetweenPresses() {
         let client = FakeDisplayServicesBrightnessClient()
         client.currentBrightnessValues = [0.5, 0.52]
         client.setBrightnessResult = true
         var now: TimeInterval = 10
-        let controller = BrightnessKeyController(displayController: client, uptime: { now }, transitionDuration: { 3 })
+        let controller = BrightnessKeyController(displayController: client, uptime: { now }, transitionDuration: { 2 })
 
         #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
-        now = 12
+        now = 11.5
         #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
 
         #expect(client.setBrightnessArguments == [0.5625, 0.625])

@@ -103,6 +103,9 @@ struct SettingsView: View {
         }
         .frame(width: 520)
         .onAppear {
+            if DisplayBrightnessDuration(rawValue: displayBrightnessDurationMs) == nil {
+                displayBrightnessDurationMs = DisplayBrightnessDuration.selected(in: .standard).rawValue
+            }
             refreshAccessibilityStatus()
             refreshUpdateSettings()
         }
@@ -170,11 +173,7 @@ struct SettingsView: View {
                 Spacer()
                 Picker("Transition Duration", selection: $displayBrightnessDurationMs) {
                     ForEach(DisplayBrightnessDuration.allCases) { duration in
-                        if duration == .instant {
-                            Text("0 s (Instant)").tag(duration.rawValue)
-                        } else {
-                            Text(verbatim: duration.label).tag(duration.rawValue)
-                        }
+                        Text(duration.displayName).tag(duration.rawValue)
                     }
                 }
                 .labelsHidden()
