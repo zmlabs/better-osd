@@ -59,6 +59,71 @@
         }
       }
     },
+    "0 s (Instant)": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "0 s (Sofort)" } },
+        "es": { "stringUnit": { "state": "translated", "value": "0 s (Instantáneo)" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "0 s (Instantané)" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "0秒（即時）" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "0초 (즉시)" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "0 秒（立即）" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "0 秒（立即）" } },
+        "en": { "stringUnit": { "state": "translated", "value": "0 s (Instant)" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "0 с (без анимации)" } }
+      }
+    },
+    "0.25 s": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "0,25 s" } },
+        "es": { "stringUnit": { "state": "translated", "value": "0,25 s" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "0,25 s" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "0.25秒" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "0.25초" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "0.25 秒" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "0.25 秒" } },
+        "en": { "stringUnit": { "state": "translated", "value": "0.25 s" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "0,25 с" } }
+      }
+    },
+    "0.5 s": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "0,5 s" } },
+        "es": { "stringUnit": { "state": "translated", "value": "0,5 s" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "0,5 s" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "0.5秒" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "0.5초" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "0.5 秒" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "0.5 秒" } },
+        "en": { "stringUnit": { "state": "translated", "value": "0.5 s" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "0,5 с" } }
+      }
+    },
+    "1 s": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "1 s" } },
+        "es": { "stringUnit": { "state": "translated", "value": "1 s" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "1 s" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "1秒" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "1초" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "1 秒" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "1 秒" } },
+        "en": { "stringUnit": { "state": "translated", "value": "1 s" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "1 с" } }
+      }
+    },
+    "2 s": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "2 s" } },
+        "es": { "stringUnit": { "state": "translated", "value": "2 s" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "2 s" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "2秒" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "2초" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "2 秒" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "2 秒" } },
+        "en": { "stringUnit": { "state": "translated", "value": "2 s" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "2 с" } }
+      }
+    },
     "Accessibility Permission Needed": {
       "localizations": {
         "de": {
@@ -1918,6 +1983,19 @@
             "value": "Показывать в строке меню"
           }
         }
+      }
+    },
+    "Transition Duration": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Übergangsdauer" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Duración de la transición" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Durée de transition" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "切り替え時間" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "전환 시간" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "过渡时长" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "過渡時間" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Transition Duration" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Длительность перехода" } }
       }
     },
     "Update Available": {

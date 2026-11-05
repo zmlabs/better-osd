@@ -67,6 +67,7 @@ struct SettingsView: View {
     @AppStorage(AppStorageKeys.liquidGlassEnable) private var liquidGlassEnable: Bool = true
     @AppStorage(AppStorageKeys.bottomOffset) private var bottomOffset: Double = 120
     @AppStorage(AppStorageKeys.glassVariant) private var glassVariant: Int = 0
+    @AppStorage(AppStorageKeys.displayBrightnessDurationMs) private var displayBrightnessDurationMs: Int = DisplayBrightnessDuration.oneSecond.rawValue
     @AppStorage(AppStorageKeys.keyboardBacklightEnabled) private var keyboardBacklightEnabled: Bool = false
     @AppStorage(AppStorageKeys.keyboardBrightnessUpCode) private var brightnessUpCode: Int = -1
     @AppStorage(AppStorageKeys.keyboardBrightnessDownCode) private var brightnessDownCode: Int = -1
@@ -89,6 +90,7 @@ struct SettingsView: View {
 
                 previewSection
                 appearanceSection
+                displayBrightnessSection
                 keyboardBacklightSection
                 generalSection
                 updateSection
@@ -101,6 +103,9 @@ struct SettingsView: View {
         }
         .frame(width: 520)
         .onAppear {
+            if DisplayBrightnessDuration(rawValue: displayBrightnessDurationMs) == nil {
+                displayBrightnessDurationMs = DisplayBrightnessDuration.selected(in: .standard).rawValue
+            }
             refreshAccessibilityStatus()
             refreshUpdateSettings()
         }
@@ -156,6 +161,24 @@ struct SettingsView: View {
                 glassVariant: glassVariant
             )
             .scaleEffect(0.85)
+        }
+    }
+
+    // MARK: - Display Brightness
+
+    private var displayBrightnessSection: some View {
+        SettingsSection(title: "Brightness") {
+            SettingsRow {
+                Text("Transition Duration")
+                Spacer()
+                Picker("Transition Duration", selection: $displayBrightnessDurationMs) {
+                    ForEach(DisplayBrightnessDuration.allCases) { duration in
+                        Text(duration.displayName).tag(duration.rawValue)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 180)
+            }
         }
     }
 
