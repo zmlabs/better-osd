@@ -34,6 +34,7 @@ enum AppStorageKeys {
     static let bottomOffset = "bottomOffset"
     static let glassVariant = "glassVariant"
     static let accessibilityPrompted = "accessibilityPrompted"
+    static let displayBrightnessDurationMs = "displayBrightnessDurationMs"
 
     // External display brightness via DDC/CI ("ddcBrightness.<vendor>:<model>:<serial>")
     static let ddcBrightnessCachePrefix = "ddcBrightness."

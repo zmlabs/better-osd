@@ -123,7 +123,7 @@ struct BrightnessKeyControllerTests {
         let client = FakeDisplayServicesBrightnessClient()
         client.currentBrightnessValues = [0.5, 0.52, 0.54]
         client.setBrightnessResult = true
-        let controller = BrightnessKeyController(displayController: client, uptime: { 10 })
+        let controller = BrightnessKeyController(displayController: client, uptime: { 10 }, transitionDuration: { 1 })
 
         #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
         #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
@@ -139,13 +139,56 @@ struct BrightnessKeyControllerTests {
         client.currentBrightnessValues = [0.5, 0.75]
         client.setBrightnessResult = true
         var now: TimeInterval = 10
-        let controller = BrightnessKeyController(displayController: client, uptime: { now })
+        let controller = BrightnessKeyController(displayController: client, uptime: { now }, transitionDuration: { 1 })
 
         #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
         now = 11
         #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
 
         #expect(client.setBrightnessArguments == [0.5625, 0.8125])
+    }
+
+    @Test
+    func usesRequestedLevelWithinOneSecondWhileDisplayIsAnimating() {
+        let client = FakeDisplayServicesBrightnessClient()
+        client.currentBrightnessValues = [0.5, 0.52]
+        client.setBrightnessResult = true
+        var now: TimeInterval = 10
+        let controller = BrightnessKeyController(displayController: client, uptime: { now }, transitionDuration: { 1 })
+
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+        now = 10.75
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+
+        #expect(client.setBrightnessArguments == [0.5625, 0.625])
+    }
+
+    @Test
+    func instantDurationUsesLiveBrightnessForEachPress() {
+        let client = FakeDisplayServicesBrightnessClient()
+        client.currentBrightnessValues = [0.5, 0.75]
+        client.setBrightnessResult = true
+        let controller = BrightnessKeyController(displayController: client, uptime: { 10 }, transitionDuration: { 0 })
+
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+
+        #expect(client.setBrightnessArguments == [0.5625, 0.8125])
+    }
+
+    @Test
+    func threeSecondDurationKeepsRequestedLevelBetweenPresses() {
+        let client = FakeDisplayServicesBrightnessClient()
+        client.currentBrightnessValues = [0.5, 0.52]
+        client.setBrightnessResult = true
+        var now: TimeInterval = 10
+        let controller = BrightnessKeyController(displayController: client, uptime: { now }, transitionDuration: { 3 })
+
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+        now = 12
+        #expect(controller.handle(.brightnessUp, fineStep: false) == .consumed(didChange: true))
+
+        #expect(client.setBrightnessArguments == [0.5625, 0.625])
     }
 }
 

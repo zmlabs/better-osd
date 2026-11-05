@@ -9,8 +9,6 @@ import CoreGraphics
 import Foundation
 
 final class BrightnessKeyController {
-    private static let transitionWindow: TimeInterval = 0.5
-
     private enum Destination: Hashable {
         case allDisplays
         case display(CGDirectDisplayID)
@@ -23,15 +21,20 @@ final class BrightnessKeyController {
 
     private let displayController: any DisplayServicesBrightnessControlling & TargetedBrightnessControlling
     private let uptime: () -> TimeInterval
+    private let transitionDuration: () -> TimeInterval
     private var pendingSteps: [Destination: PendingStep] = [:]
     private(set) var currentState = BrightnessState(brightness: 0)
 
     init(
         displayController: any DisplayServicesBrightnessControlling & TargetedBrightnessControlling = CompositeBrightnessClient(),
-        uptime: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
+        uptime: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
+        transitionDuration: @escaping () -> TimeInterval = {
+            DisplayBrightnessDuration.selected(in: .standard).seconds
+        }
     ) {
         self.displayController = displayController
         self.uptime = uptime
+        self.transitionDuration = transitionDuration
     }
 
     func handle(_ key: MediaKeyMonitor.MediaKey, fineStep: Bool) -> MediaKeyHandlingResult {
@@ -65,12 +68,12 @@ final class BrightnessKeyController {
             return .passThrough
         }
 
-        // DisplayServices animates asynchronously. During a quick sequence of
+        // Brightness transitions run asynchronously. During a quick sequence of
         // key presses, readback can still be between the old and requested
         // levels. Use the last requested level as the next step's base.
         let now = uptime()
         let baseBrightness: Float
-        if let pending = pendingSteps[destination], now - pending.issuedAt < Self.transitionWindow {
+        if let pending = pendingSteps[destination], now - pending.issuedAt < transitionDuration() {
             baseBrightness = pending.target
         } else {
             pendingSteps.removeValue(forKey: destination)

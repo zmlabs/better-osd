@@ -21,6 +21,24 @@ protocol TargetedBrightnessControlling: AnyObject {
     func setBrightness(_ brightness: Float, ofDisplay displayID: CGDirectDisplayID) -> Bool
 }
 
+struct DisplayBrightnessTransition {
+    let start: Float
+    let target: Float
+    let startedAt: TimeInterval
+    let duration: TimeInterval
+
+    func value(at time: TimeInterval) -> Float {
+        guard duration > 0 else { return target }
+        let progress = Float(max(0, min(1, (time - startedAt) / duration)))
+        let eased = progress * progress * (3 - 2 * progress)
+        return start + (target - start) * eased
+    }
+
+    func isFinished(at time: TimeInterval) -> Bool {
+        time - startedAt >= duration
+    }
+}
+
 final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControlling, TargetedBrightnessControlling {
     private typealias CanChangeBrightness = @convention(c) (CGDirectDisplayID) -> Bool
     private typealias GetBrightness = @convention(c) (CGDirectDisplayID, UnsafeMutablePointer<Float>) -> Int32
@@ -31,7 +49,13 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
     private var canChangeBrightness: CanChangeBrightness?
     private var getBrightnessFn: GetBrightness?
     private var setBrightnessFn: SetBrightness?
-    private var setBrightnessSmoothFn: SetBrightness?
+    private var transitions: [CGDirectDisplayID: DisplayBrightnessTransition] = [:]
+    private var transitionTimer: Timer?
+    private let preferences: UserDefaults
+
+    init(preferences: UserDefaults = .standard) {
+        self.preferences = preferences
+    }
 
     func currentBrightness() -> Float? {
         guard let displayID = firstControllableDisplayID(),
@@ -86,16 +110,54 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
         }
 
         let target = max(0, min(1, brightness))
-        // The smooth private API takes a delta from the current brightness,
-        // whereas SetBrightness takes an absolute value. Fall back to the
-        // existing setter when the symbol or the current reading is unavailable.
-        if let setBrightnessSmoothFn,
-           let current = currentBrightness(ofDisplay: displayID),
-           abs(target - current) > 0.0001,
-           setBrightnessSmoothFn(displayID, target - current) == 0 {
-            return true
+        let duration = DisplayBrightnessDuration.selected(in: preferences).seconds
+        guard duration > 0,
+              let current = currentBrightness(ofDisplay: displayID),
+              abs(target - current) > 0.0001 else {
+            transitions.removeValue(forKey: displayID)
+            stopTransitionTimerIfIdle()
+            return setBrightnessFn(displayID, target) == 0
         }
-        return setBrightnessFn(displayID, target) == 0
+
+        // Check that the display accepts writes before reporting the key as
+        // handled. The timer then drives the selected transition.
+        guard setBrightnessFn(displayID, current) == 0 else { return false }
+        transitions[displayID] = DisplayBrightnessTransition(
+            start: current,
+            target: target,
+            startedAt: ProcessInfo.processInfo.systemUptime,
+            duration: duration
+        )
+        startTransitionTimerIfNeeded()
+        return true
+    }
+
+    private func startTransitionTimerIfNeeded() {
+        guard transitionTimer == nil else { return }
+        let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.advanceTransitions(at: ProcessInfo.processInfo.systemUptime)
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        transitionTimer = timer
+    }
+
+    private func advanceTransitions(at time: TimeInterval) {
+        guard let setBrightnessFn else { return }
+        for (displayID, transition) in transitions {
+            let result = setBrightnessFn(displayID, transition.value(at: time))
+            if result != 0 || transition.isFinished(at: time) {
+                transitions.removeValue(forKey: displayID)
+            }
+        }
+        stopTransitionTimerIfIdle()
+    }
+
+    private func stopTransitionTimerIfIdle() {
+        guard transitions.isEmpty else { return }
+        transitionTimer?.invalidate()
+        transitionTimer = nil
     }
 
     private func firstControllableDisplayID() -> CGDirectDisplayID? {
@@ -127,7 +189,6 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
         canChangeBrightness = load(handle: handle, symbol: "DisplayServicesCanChangeBrightness")
         getBrightnessFn = load(handle: handle, symbol: "DisplayServicesGetBrightness")
         setBrightnessFn = load(handle: handle, symbol: "DisplayServicesSetBrightness")
-        setBrightnessSmoothFn = load(handle: handle, symbol: "DisplayServicesSetBrightnessSmooth")
 
         return canChangeBrightness != nil && getBrightnessFn != nil && setBrightnessFn != nil
     }
@@ -137,7 +198,8 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
         return unsafeBitCast(pointer, to: T.self)
     }
 
-    deinit {
+    isolated deinit {
+        transitionTimer?.invalidate()
         if let handle {
             dlclose(handle)
         }
