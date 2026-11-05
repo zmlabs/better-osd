@@ -111,7 +111,9 @@ final class DisplayServicesBrightnessClient: DisplayServicesBrightnessControllin
 
         let target = max(0, min(1, brightness))
         let duration = DisplayBrightnessDuration.selected(in: preferences).seconds
-        guard duration > 0,
+        // Zero turns the backlight off; do it immediately even when a transition is selected.
+        guard target > 0,
+              duration > 0,
               let current = currentBrightness(ofDisplay: displayID),
               abs(target - current) > 0.0001 else {
             transitions.removeValue(forKey: displayID)
